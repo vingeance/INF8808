@@ -52,7 +52,7 @@
     }
 
     #footer{
-        height:1000px;
+        height:250px;
     }
 
    #tooltip{
@@ -82,24 +82,24 @@
     </style>
 </head>
 <body>
-    <h1>Scrolly Example</h1>
+    <h1>Tournages dans la région de Montréal</h1>
     <div id="container">
             <div id="graph"></div>
     <div id="sections">
 
         <section>
-            <h3>The Iris data set</h3>
+            <h3>Step One</h3>
             The Iris data set consists of 50 different examples of iris, with four measurements for each flower: petal length, petal width, sepal length, and sepal width. It has become something of famous data set because of its use in testing machine classification algorithms.
         </section>
         <section>
-            <h3>Clustering</h3>
+            <h3>Step Two</h3>
             From the visualization standpoint, it is somewhat less interesting, because there are two primary clusters that become immediately obvious. When we add color we can see that the Setosa Irises are in their own cluster, while the other two types cling together. </section>
         <section>
-            <h3>Variations</h3>
+            <h3>Step Three</h3>
             That said, by looking at the right set of variables, we can make the division more obvious.
         </section>
         <section>
-            <h3>Bar chart</h3>
+            <h3>Step Four</h3>
             Hello it's me
         </section>
 
@@ -123,45 +123,52 @@
 d3.csv("http://www.cs.middlebury.edu/~candrews/classes/cs465-f18/data/iris.csv").then(function(data){
     const color_scale = d3.scaleOrdinal(d3.schemeCategory10);
     const svg = d3.select("#graph").append("svg")
-        .attr("width", 500)
-        .attr("height", 500);
+        .attr("width", 600)
+        .attr("height", 400);
 
-    const bar_charts = create_mini_barcharts(svg, 450, 450,data);
-    const iris_plot = create_iris_plot(svg, 450, 450, data);
+    /*const bar_charts = create_mini_barcharts(svg, 450, 450,data);
+    const iris_plot = create_iris_plot(svg, 450, 450, data);*/
+
+    var replaceSvgImage = function (svg, imagePath) {
+      svg.select("image").remove();
+      svg.append("svg:image")
+         .attr("xlink:href", imagePath)
+         .attr("width", 600)
+         .attr("height", "100%");
+    }
 
     var stepOne = function() {
-      bar_charts.opacity(0);
+      /*bar_charts.opacity(0);
       iris_plot.opacity(1);
       iris_plot.color("black");
-      iris_plot.x_metric("sepal_width").y_metric("sepal_length");
+      iris_plot.x_metric("sepal_width").y_metric("sepal_length");*/
+      replaceSvgImage(svg, "resources/images/stepOne.jpg")
     }
 
     var stepTwo = function() {
-      bar_charts.opacity(0);
+      /*bar_charts.opacity(0);
       iris_plot.opacity(1);
       iris_plot.color((d)=>color_scale(d.class));
-      iris_plot.x_metric("sepal_width").y_metric("sepal_length");
+      iris_plot.x_metric("sepal_width").y_metric("sepal_length");*/
+      replaceSvgImage(svg, "resources/images/stepTwo.jpg")
     }
 
     var stepThree = function() {
-      bar_charts.opacity(0);
+      /*bar_charts.opacity(0);
       iris_plot.opacity(1);
       iris_plot.color((d)=>color_scale(d.class));
-      iris_plot.x_metric("petal_width").y_metric("petal_length");
+      iris_plot.x_metric("petal_width").y_metric("petal_length");*/
+      replaceSvgImage(svg, "resources/images/stepThree.jpg")
     }
 
     var stepFour = function() {
-      iris_plot.opacity(0);
+      /*iris_plot.opacity(0);
       document.getElementById("tooltip").classList.add('hidden');
-      bar_charts.opacity(1);
+      bar_charts.opacity(1);*/
+      replaceSvgImage(svg, "resources/images/stepFour.jpg")
     }
 
-    const vis_steps = [
-        stepOne,
-        stepTwo,
-        stepThree,
-        stepFour
-    ];
+    const vis_steps = [stepOne, stepTwo, stepThree, stepFour];
 
     const gs = d3.graphScroll()
     .container(d3.select("#container"))
@@ -170,8 +177,8 @@ d3.csv("http://www.cs.middlebury.edu/~candrews/classes/cs465-f18/data/iris.csv")
     .sections(d3.selectAll("#container #sections > section"))
     .on("active", function(i) {
         vis_steps[i]();
-        iris_plot(); // update the view
-        bar_charts(); // update the view
+        //iris_plot(); // update the view
+        //bar_charts(); // update the view
     });
 
 });
