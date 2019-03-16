@@ -3,88 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Tournages à Montréal</title>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="graph-scroll.js"></script>
-    <script src="iris_plot.js" ></script>
 
-    <style>
-
-    body{
-        max-width: 900px;
-        margin: 0px auto;
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-
-    h1{
-        margin: 50px;
-    }
-
-    h1{
-        text-align: center;
-    }
-
-
-    #container{
-        position: relative;
-    }
-
-    #sections{
-        width: 340px;
-        padding-bottom:300px;
-    }
-
-    #sections > section{
-        opacity: .2;
-        margin-bottom: 200px;
-    }
-
-    #sections > section.graph-scroll-active{
-        opacity: 1;
-    }
-
-    #graph{
-        margin-left: 40px;
-        width: 500px;
-        position: sticky;
-        top: 20px;
-        float: right;
-
-    }
-
-    #footer{
-        height:250px;
-    }
-
-   #tooltip{
-        position:absolute;
-        width:150px;
-        height:auto;
-        padding:10px;
-        background-color: white;
-        border-radius:10px;
-        box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
-        pointer-events: none;
-    }
-
-    #tooltip.hidden{
-        display:none;
-    }
-
-    #tooltip p{
-        margin:0;
-        font-family: sans-serif;
-        font-size:12px;
-    }
-
-    #graph svg{
-        border:solid 1px lightgrey;
-    }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <h1>Tournages dans la région de Montréal</h1>
     <p style="text-align:center;">
-      <img src="./resources/images/camera.jpg" max-width="200px" height="200px" align="middle"/>
+      <img src="/assets/img/camera.jpg" max-width="200px" height="200px" align="middle"/>
 
     </p>
 
@@ -93,108 +18,36 @@
       </p>
       <p></p>
       <br></br><br></br><br></br>
+
     <div id="container">
-            <div id="graph"></div>
-    <div id="sections">
-
-        <section>
-            <h3>Provenance des productions</h3>
-            D'où proviennent les producteurs des tournages à Montréal ?
-        </section>
-        <section>
-            <h3>Tournages selon les mois</h3>
-            Quelles sont les périodes de l'année où il y a le plus de tournage à montréal ?
-           </section>
-        <section>
-            <h3>Tournages selon les types</h3>
-             Visualisation des différents types de productions au fil du temps.
-        </section>
-        <section>
-            <h3>Endroits des tournages</h3>
-            Visualisation des endroits de tournages à montréal.
-        </section>
-
-    </div>
-
+      <div id="graph"></div>
+      <div id="sections">
+          <section>
+              <h3>Provenance des productions</h3>
+              D'où proviennent les producteurs des tournages à Montréal ?
+          </section>
+          <section>
+              <h3>Tournages selon les mois</h3>
+              Quelles sont les périodes de l'année où il y a le plus de tournage à montréal ?
+             </section>
+          <section>
+              <h3>Tournages selon les types</h3>
+               Visualisation des différents types de productions au fil du temps.
+          </section>
+          <section>
+              <h3>Endroits des tournages</h3>
+              Visualisation des endroits de tournages à montréal.
+          </section>
+      </div>
 </div>
 
 <div id="footer"></div>
-<div id="tooltip" class="hidden">
-        <p>Class: <span id="class"></span></p>
-        <p>
-        Petal length: <span id="petal_length"></span><br />
-        Petal width: <span id="petal_width"></span><br />
-        Sepal length: <span id="sepal_length"></span><br />
-        Sepal width: <span id="sepal_width"></span><br />
-        </p>
-   </div>
 
-<script>
+<script type="text/javascript" src="assets/libs/d3.js"></script>
+<script type="text/javascript" src="assets/libs/graph-scroll.js"></script>
 
-d3.csv("http://www.cs.middlebury.edu/~candrews/classes/cs465-f18/data/iris.csv").then(function(data){
-    const color_scale = d3.scaleOrdinal(d3.schemeCategory10);
-    const svg = d3.select("#graph").append("svg")
-        .attr("width", 600)
-        .attr("height", 400);
-
-    /*const bar_charts = create_mini_barcharts(svg, 450, 450,data);
-    const iris_plot = create_iris_plot(svg, 450, 450, data);*/
-
-    var replaceSvgImage = function (svg, imagePath) {
-      svg.select("image").remove();
-      svg.append("svg:image")
-         .attr("xlink:href", imagePath)
-         .attr("width", 600)
-         .attr("height", "100%");
-    }
-
-    var stepOne = function() {
-      /*bar_charts.opacity(0);
-      iris_plot.opacity(1);
-      iris_plot.color("black");
-      iris_plot.x_metric("sepal_width").y_metric("sepal_length");*/
-      replaceSvgImage(svg, "resources/images/stepOne.jpg")
-    }
-
-    var stepTwo = function() {
-      /*bar_charts.opacity(0);
-      iris_plot.opacity(1);
-      iris_plot.color((d)=>color_scale(d.class));
-      iris_plot.x_metric("sepal_width").y_metric("sepal_length");*/
-      replaceSvgImage(svg, "resources/images/stepTwo.jpg")
-    }
-
-    var stepThree = function() {
-      /*bar_charts.opacity(0);
-      iris_plot.opacity(1);
-      iris_plot.color((d)=>color_scale(d.class));
-      iris_plot.x_metric("petal_width").y_metric("petal_length");*/
-      replaceSvgImage(svg, "resources/images/stepThree.jpg")
-    }
-
-    var stepFour = function() {
-      /*iris_plot.opacity(0);
-      document.getElementById("tooltip").classList.add('hidden');
-      bar_charts.opacity(1);*/
-      replaceSvgImage(svg, "resources/images/stepFour.jpg")
-    }
-
-    const vis_steps = [stepOne, stepTwo, stepThree, stepFour];
-
-    const gs = d3.graphScroll()
-    .container(d3.select("#container"))
-    .graph(d3.select("#graph"))
-    .eventId('sec1_id')
-    .sections(d3.selectAll("#container #sections > section"))
-    .on("active", function(i) {
-        vis_steps[i]();
-        //iris_plot(); // update the view
-        //bar_charts(); // update the view
-    });
-
-});
-
-</script>
+<script type="text/javascript" src="assets/scripts/flow.js"></script>
+<script type="text/javascript" src="assets/scripts/shooting-map.js"></script>
 
 </body>
 </html>
