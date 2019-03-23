@@ -65,3 +65,12 @@ svg .zone {
   font-family: Arial;
   font-weight: bold;
 }
+
+/***** Panel *****/
+#panel {
+  display: none;
+  width: 300px;
+  text-align: left;
+  font-size: 0.7em;
+  background-color: rgba(255, 255, 255, 0.9);
+}

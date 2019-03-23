@@ -1,4 +1,4 @@
-d3.csv("./data/permis_tournages.csv").then(function(data){
+d3.csv("./data/permis_tournages.csv").then(function(csvdata){
 
     var width = 600, height = 500;
     const svg = d3.select("#graph").append("svg")
@@ -15,7 +15,8 @@ d3.csv("./data/permis_tournages.csv").then(function(data){
     }
 
     var stepFour = function() {
-      const shooting_map = create_shooting_map(svg, width, height, data);
+      var sources = createSources(csvdata);
+      const shooting_map = create_shooting_map(svg, width, height, sources);
     }
 
     const vis_steps = [stepOne, stepTwo, stepThree, stepFour];
