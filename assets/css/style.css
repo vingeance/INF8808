@@ -44,7 +44,10 @@ h1{
 }
 
 /*** Map ********************/
-#graph svg{
+#map {
+    width: max-content;
+}
+#map svg{
     border:solid 1px lightgrey;
 }
 
@@ -71,6 +74,5 @@ svg .zone {
   display: none;
   width: 300px;
   text-align: left;
-  font-size: 0.7em;
   background-color: rgba(255, 255, 255, 0.9);
 }

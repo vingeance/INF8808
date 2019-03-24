@@ -1,20 +1,42 @@
-function createSources(csvdata) {
-  var filtered = csvdata.filter(function(d) {
-    return d.NOM_ARROND !== 'Indéfini';
+function colorScale(color, prodTypes) {
+  color.domain(prodTypes.map(function (d) {
+    return d.name;
+  }));
+  color.range(prodTypes.map(function (d) {
+    return d.color;
+  }));
+}
+
+function createSources(permisData, protocolesData) {
+  var filtered = permisData.filter(function(d) {
+    return (d.NOM_ARROND !== 'Indéfini') && (d.LONGITUDE !== "") && (d.LATITUDE !== "");
   });
 
-  return d3.nest()
-    .key(function (d) {
-      return getSourceKey(d.NOM_ARROND);
-    })
-    .sortKeys(d3.ascending)
+  var sources = d3.nest()
+    .key(function(d) { return d.NO_ID_PRO; })
+    .key(function(d) { return d.NOM_ARROND; })
     .entries(filtered)
-    .map(function (d) {
+    /*.map(function (d) {
+      console.log(d);
       return {
-        "id": +d.key,
-        "zone": d.values[0].NOM_ARROND
+        "idProd": +d.values[0].NO_ID_PRO,
+        "zoneId": +getZoneId(d.values[0].NOM_ARROND),
+        "zoneName": d.values[0].NOM_ARROND,
+        "long": Number(d.values[0].LONGITUDE),
+        "lat": Number(d.values[0].LATITUDE)
       }
+    })*/;
+
+    sources.forEach(function(permis) {
+        var result = protocolesData.filter(function(protocole) {
+            return protocole.NO_ID_PRO === permis.key;
+        });
+        delete permis.NO_ID_PRO;
+        permis.TYPE_PRO = (result[0] !== undefined) ? result[0].NOM_TYPEPRODUCTION : null;
     });
+
+    //console.log(sources);
+    return sources;
 }
 
 
@@ -60,7 +82,7 @@ Baie-d'Urfé = 71
 
 */
 
-function getSourceKey(zoneName) {
+function getZoneId(zoneName) {
     let key = 0;
     switch (zoneName) {
     case "Outremont":
