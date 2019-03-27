@@ -36,9 +36,15 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
 
         colorScale(color, prodTypes);
         var sources = createSources(permisData, protocolesData);
-        const shooting_map = create_shooting_map(mapsvg, 900, 650, sources, color);
-
-        var stepOne = function() {
+        const shooting_map = create_shooting_map(mapsvg, 900, 650, sources, color);	
+		
+		// Création de la première data viz
+		const sqrsvg = d3.select("#sqrviz").append("svg");
+		console.log(protocolesData);
+		const sqr_viz = create_sqr_viz(sqrsvg, protocolesData, color);
+		
+		
+        var stepOne = function() {	
         }
 
         var stepTwo = function() {
