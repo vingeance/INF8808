@@ -7,7 +7,7 @@ function colorScale(color, prodTypes) {
   }));
 }
 
-function createSources(permisData, protocolesData) {
+function createSourcesMap(permisData, protocolesData) {
   var filtered = permisData.filter(function(d) {
     return (d.NOM_ARROND !== 'Indéfini') && (d.LONGITUDE !== "") && (d.LATITUDE !== "");
   });
@@ -189,4 +189,23 @@ function getZoneId(zoneName) {
       break;
   }
   return key;
+}
+
+function createSourcesLineChart(protocolesData) {
+  var filtered = protocolesData.filter(function(d) {
+    return (d.PERIODE_DE !== "") && (d.PERIODE_AU !== "");
+  });
+  var arraySource = [0,0,0,0,0,0,0,0,0,0,0,0,0];
+    // console.log(filtered);
+    filtered.forEach(function(data) {
+      var startMonth = parseInt(data.PERIODE_DE.split("-")[1],10);
+      var endMonth = parseInt(data.PERIODE_AU.split("-")[1], 10);
+      for (var i = 1; i < 13; i++) {
+        if(i <= endMonth && i >= startMonth){
+            arraySource[i]++;
+        }
+      }
+    });
+
+     return arraySource;
 }

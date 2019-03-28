@@ -34,9 +34,18 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
           .attr("x", "25%")
           .attr("y", "25%");
 
+      const linesvg = d3.select("#lineChart").append("svg")
+              .attr("width", 900)
+              .attr("height", 650);
+
+
+
         colorScale(color, prodTypes);
-        var sources = createSources(permisData, protocolesData);
+        var sources = createSourcesMap(permisData, protocolesData);
         const shooting_map = create_shooting_map(mapsvg, 900, 650, sources, color);
+
+        var sources = createSourcesLineChart(protocolesData);
+        const linechart = create_lineChart(linesvg, 750, 450, sources);
 
         var stepOne = function() {
         }
