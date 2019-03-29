@@ -44,18 +44,58 @@ function compute_percentage(sources){
 }
 
 
-function create_sqr_viz(parent, sources, color){
+function create_sqr_viz(parent, sources, color, tip){
   
   const percentage = compute_percentage(sources);
-  //console.log(percentage);
+  console.log(percentage);
   
-  // percentage est le tableau ordonnée
-  // pour chaque élément de percentage, on détermine le nombre de carré à dessiner (à vérifier mais 1 carré = 1%)
-  // On dessine ensuite le nombre de carré correspondant
+  var viz = parent.append("g");
+  var legend = parent.append("g")
+				.attr("class", "legend");
+ 
+  var i;
+  var j = 0;
+  for(i = 0; i < percentage.length; i++){
+	var nb_sqr = percentage[i].percentage + j;
+	for(j; j < nb_sqr; j++){
+		var nb_col = j % 10;
+		var nb_row = Math.floor(j/10);
+		viz.append("rect")
+			.attr("x", 36*nb_col)
+			.attr("y", 36*nb_row)
+			.attr("width", 30)
+			.attr("height", 30)
+			.attr("fill", color(percentage[i].name));
+	}
+  }
   
-  // on ajoute le tool-tip lorsqu'on passe la souris au dessus
-  
-  
-  // on ajoute la légende
+  for(i = 0; i < percentage.length; i++){
+	const shift = 380 + 25*i;
+	var item = legend.append("g")
+				.attr("id", "who" + i)
+				.attr("transform", "translate(0," + shift +")")
+				.on("mouseover", tip.show)
+				.on("mouseout", tip.hide);;
+	
+	item.append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 15)
+		.attr("height", 15)
+		.attr("fill", color(percentage[i].name));
+		
+	item.append("text")
+		.attr("x", 25)
+		.attr("y", 15)
+		.text(percentage[i].name);
+  }
+
+}
+
+function getToolTipText(d) {
+	console.log(d);
+	//var info = d.count + " (" + pourcentage + ")";
+	var info = "hey";
+	return info;
 }
 
