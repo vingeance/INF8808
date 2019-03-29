@@ -63,7 +63,8 @@ var months = [0,"Janvier","Février", "Mars", "Avril", "Mai", "Juin", "Juillet",
   svg.append("path")
       .datum(sources) // 10. Binds data to the line
       .attr("class", "line") // Assign a class for styling
-      .attr("d", line); // 11. Calls the line generator
+      .attr("d", line)
+      .attr("id", "line"); // 11. Calls the line generator
 
 
   // 12. Appends a circle for each datapoint
