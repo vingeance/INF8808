@@ -19,7 +19,7 @@
  * @see http://bl.ocks.org/IPWright83/08ae9e22a41b7e64e090cae4aba79ef9       (en d3 v3)
  * @see https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172    ==> (en d3 v5) <==
  */
-function brushUpdate(brush, g, line, xFocus, xContext, xAxis, yAxis, sources, color, lineContext) {
+function brushUpdate(brush, g, line, xFocus, xContext, xAxis, yAxis) {
   // TODO: Redessiner le graphique focus en fonction de la zone sélectionnée dans le graphique contexte.
   if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return;
   var s = d3.event.selection || xContext.range();
@@ -27,7 +27,4 @@ function brushUpdate(brush, g, line, xFocus, xContext, xAxis, yAxis, sources, co
   g.selectAll("path.line").attr("d", line);
   g.select(".x.axis").call(xAxis);
   g.select(".y.axis").call(yAxis);
-  d3.select("#graphChart").selectAll("path").remove();
-  createFocusGraphChart(g, sources, line, color);
-  createContextLineChart(focus, sources, lineContext, color);
 }

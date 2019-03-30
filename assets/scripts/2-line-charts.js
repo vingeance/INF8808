@@ -21,7 +21,6 @@ function createLine(x, y) {
                .x(function(d) { return x(d.date);})
                .y(function(d) { return y(d.count);})
                .curve(d3.curveBasisOpen);
-
   return line;
 }
 
@@ -33,7 +32,7 @@ function createLine(x, y) {
  * @param line      La fonction permettant de dessiner les lignes du graphique.
  * @param color     L'échelle de couleurs ayant une couleur associée à un nom de rue.
  */
-function createFocusGraphChart(g, sources, line, color) {
+function createFocusLineChart(g, sources, line, color) {
   // TODO: Dessiner le graphique focus dans le groupe "g".
   // Pour chacun des "path" que vous allez dessiner, spécifier l'attribut suivant: .attr("clip-path", "url(#clip)").
   g.append("g")
@@ -52,7 +51,6 @@ function createFocusGraphChart(g, sources, line, color) {
      .attr("stroke", function(source) {
           var colorName;
           source.name == "Moyenne" ? colorName = "black": colorName = color(source.name);
-          console.log(colorName);
           return colorName;
         })
      .selectAll("path")
@@ -77,34 +75,31 @@ function createFocusGraphChart(g, sources, line, color) {
  */
 function createContextLineChart(g, sources, line, color) {
   // TODO: Dessiner le graphique contexte dans le groupe "g".
-
-  g.append("g")
-    .attr("id", "context")
+  var contextLineGroups = g.append("g")
+    .attr("class", "context")
     .selectAll("g")
     .data(sources)
-    .enter().append("g")
-    .attr("id", function(source) {
-         return "context-" + source.name;
-       })
-    .attr("stroke-width",  function(source) {
-        var width ;
-        source.name == "Moyenne" ? width ="3px": width = "1px";
-        return width;
-      })
-    .attr("stroke", function(source) {
-        var colorName;
-        source.name == "Moyenne" ? colorName = "black": colorName = color(source.name);
-        return colorName;
-      })
+    .enter().append("g");
 
-      .attr("transform", "translate(0," + 425 + ")")
-    .selectAll("path")
-    .data(function(source) {
-        return [source.values];
-      })
-    .enter()
-    .append("path")
+  contextLineGroups.append("path")
     .attr("class", "line")
-    .attr("d", line)
-    .attr("fill", "none");
+    .attr("d", function (d) {
+      return line(d.values);
+    })
+    .attr("clip-path", "url(#clip)")
+    .style("stroke", function (d) {
+      if (d.name === "Moyenne") {
+        return "black"
+      }
+      return color(d.name);
+    })
+    .style("stroke-width", function (d) {
+      if (d.name === "Moyenne") {
+        return 2;
+      }
+      return 1;
+    })
+    .attr("id", function (d) {
+      return "context" + d.name;
+    });
 }

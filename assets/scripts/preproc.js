@@ -223,7 +223,6 @@ function parseDate(data) {
     item.PERIODE_AU = parseInt(item.PERIODE_AU.split("-")[0], 10);
   });
 }
-
 /**
  * Trie les données par nom de rue puis par date.
  *
@@ -245,7 +244,7 @@ function parseDate(data) {
  *                     ...
  *                  ]
  */
-function createSourcesBrushGraph(color, data, prodTypes) {
+function createSourcesGraphChart(color, data, prodTypes) {
   // TODO: Retourner l'objet ayant le format demandé.
      var filterData = [];
      var sources = [];
@@ -271,7 +270,6 @@ function createSourcesBrushGraph(color, data, prodTypes) {
            });
        }
      }
-     console.log(filterData);
      return filterData;
 }
 
@@ -284,8 +282,10 @@ function createSourcesBrushGraph(color, data, prodTypes) {
  */
 function domainX(xFocus, xContext, data) {
   // TODO: Préciser les domaines pour les variables "xFocus" et "xContext" pour l'axe X.
-  xFocus.domain([1997, 2020]);
-  xContext.domain([1997, 2020]);
+
+  // xFocus.domain([data[0].ANNEE_PROD, data[data.length - 1].ANNEE_PROD]);
+  xFocus.domain([1998,2018]);
+  xContext.domain([1998,2018]);
 }
 
 /**
@@ -295,11 +295,18 @@ function domainX(xFocus, xContext, data) {
  * @param yContext    Échelle en Y utilisée avec le graphique "contexte".
  * @param sources     Données triées par nom de rue et par date (voir fonction "createSources").
  */
- function domainY(yFocus, yContext, sources) {
-   // TODO: Préciser les domaines pour les variables "yFocus" et "yContext" pour l'axe Y.
-   var maxColumn = d3.max(sources, function(d) { return d.values});
-   var maxValues = d3.max(maxColumn, function(d) { return d.count});
+function domainY(yFocus, yContext, sources) {
+  // TODO: Préciser les domaines pour les variables "yFocus" et "yContext" pour l'axe Y.
 
-   yFocus.domain([0, 260]);
-   yContext.domain([0, 260]);
- }
+    var max = 0;
+    for(var i = 0; i < sources.length; i++) {
+      for (var j = 0; j < sources[i].values.length; j++) {
+        if(sources[i].values[j].count > max) {
+          max = sources[i].values[j].count;
+        }
+      }
+    }
+
+  yFocus.domain([0, max]);
+  yContext.domain([0, max]);
+}

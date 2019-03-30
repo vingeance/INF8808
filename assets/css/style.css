@@ -79,7 +79,7 @@ svg .zone {
 
 .line {
     fill: none;
-    stroke-width: 3;
+    stroke-width: 2;
 }
 
 #line {
@@ -147,5 +147,5 @@ svg {
 }
 
 .axis text {
-  font-size: 12pt;
+  font-size: 10pt;
 }

@@ -16,7 +16,7 @@ function legend(svg, sources, color) {
   // TODO: Créer la légende accompagnant le graphique.
   var legend = svg.append("g")
     .attr("class","legend")
-    .attr("transform","translate(900,10)")
+    .attr("transform","translate(0,30)")
     .style("font-size","12px");
 
     /** @see https://stackoverflow.com/questions/13573771/adding-a-chart-legend-in-d3 */
@@ -67,14 +67,13 @@ function displayLine(element, color) {
   let elementValue = element.attr("value");
   let focusSelector = "g#focus" + " #focus-" + elementValue;
   let contextSelector = "g#context" + " #context-" + elementValue;
-
+console.log(element);
   if(d3.select(focusSelector).style("display") == "none") {
     d3.select(focusSelector).style("display", "inline");
     d3.select(contextSelector).style("display", "inline");
     element.attr("fill", function() {
        var colorName;
        elementValue == "Moyenne" ? colorName = "black": colorName = color(elementValue);
-       console.log(colorName);
        return colorName;
     })
   }

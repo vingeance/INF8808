@@ -38,9 +38,6 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
               .attr("width", 900)
               .attr("height", 650);
 
-      let graphChartsvg = d3.select("#graphChart").append("svg")
-              .attr("width", 1200)
-              .attr("height", 650);
 
 
         colorScale(color, prodTypes);
@@ -73,81 +70,83 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
             vis_steps[i]();
         });
 
+        // Graphique principal (focus)
+        var marginFocus = {
+          top: 10,
+          right: 10,
+          bottom: 100,
+          left: 60
+        };
+        var widthFocus = 905;
+        var heightFocus = 500 - marginFocus.top - marginFocus.bottom;
 
-          // Graphique principal (focus)
-          var marginFocus = {
-            top: 10,
-            right: 10,
-            bottom: 100,
-            left: 60
-          };
-          var widthFocus = 1000 - marginFocus.left - marginFocus.right;
-          var heightFocus = 500 - marginFocus.top - marginFocus.bottom;
+        // Graphique secondaire qui permet de choisir l'échelle de la visualisation (contexte)
+        var marginContext = {
+          top: 430,
+          right: 10,
+          bottom: 30,
+          left: 60
+        };
+        var widthContext = widthFocus;
+        var heightContext = 500 - marginContext.top - marginContext.bottom;
 
-          // Graphique secondaire qui permet de choisir l'échelle de la visualisation (contexte)
-          var marginContext = {
-            top: 430,
-            right: 10,
-            bottom: 30,
-            left: 60
-          };
-          var widthContext = widthFocus;
-          var heightContext = 500 - marginContext.top - marginContext.bottom;
+        /***** Échelles *****/
+        var xFocus = d3.scaleTime().range([0, 900]);
+        var yFocus = d3.scaleLinear().range([heightFocus, 0]);
 
-          /***** Échelles *****/
-          var xFocus = d3.scaleLinear().range([0, widthFocus]);
-          var yFocus = d3.scaleLinear().range([heightFocus, 0]);
+        var xContext = d3.scaleTime().range([0, 900]);
+        var yContext = d3.scaleLinear().range([heightContext, 0]);
 
-          var xContext = d3.scaleTime().range([0, widthContext]);
-          var yContext = d3.scaleLinear().range([heightContext, 0]);
+        var xAxisFocus = d3.axisBottom(xFocus).tickFormat(d3.format("d"));
+        var yAxisFocus = d3.axisLeft(yFocus);
 
-          var xAxisFocus = d3.axisBottom(xFocus).tickFormat(d3.format("d"));
-          var yAxisFocus = d3.axisLeft(yFocus);
+        var xAxisContext = d3.axisBottom(xContext).tickFormat(d3.format("d"));
 
-          var xAxisContext = d3.axisBottom(xContext).tickFormat(d3.format("d"));
+        /***** Création des éléments *****/
+        var svg = d3.select("#graphChart")
+          .append("svg")
+          .attr("width", widthFocus + marginFocus.left + marginFocus.right)
+          .attr("height", heightFocus + marginFocus.top + marginFocus.bottom);
+        console.log(widthFocus + marginFocus.left + marginFocus.right);
+        console.log(heightFocus + marginFocus.top + marginFocus.bottom);
+        // Groupe affichant le graphique principal (focus).
+        var focus = svg.append("g")
+          .attr("transform", "translate(" + marginFocus.left + "," + marginFocus.top + ")");
 
-          /***** Création des éléments *****/
+        // Groupe affichant le graphique secondaire (contexte).
+        var context = svg.append("g")
+          .attr("transform", "translate(" + marginContext.left + "," + marginContext.top + ")");
+
+        // Ajout d'un plan de découpage.
+        svg.append("defs")
+          .append("clipPath")
+          .attr("id", "clip")
+          .append("rect")
+          .attr("width", widthFocus)
+          .attr("height", heightFocus);
+
+        // Fonctions pour dessiner les lignes
+        var lineFocus = createLine(xFocus, yFocus);
+        var lineContext = createLine(xContext, yContext);
+
+        // Permet de redessiner le graphique principal lorsque le zoom/brush est modifié.
+        var brush = d3.brushX()
+          .extent([[0, 0], [widthContext, heightContext]])
+          .on("brush", function () {
+            brushUpdate(brush, focus, lineFocus, xFocus, xContext, xAxisFocus, yAxisFocus);
+          });
 
 
-          // Groupe affichant le graphique principal (focus).
-          var focus = graphChartsvg.append("g")
-            .attr("transform", "translate(" + marginFocus.left + "," + marginFocus.top + ")");
-
-          // Groupe affichant le graphique secondaire (contexte).
-          var context = graphChartsvg.append("g")
-   .attr("transform", "translate(" + marginContext.left + "," + marginContext.top + ")");
-          // Ajout d'un plan de découpage.
-          graphChartsvg.append("defs")
-            .append("clipPath")
-            .attr("id", "clip")
-            .append("rect")
-            .attr("width", widthFocus)
-            .attr("height", heightFocus);
-
-          // Fonctions pour dessiner les lignes
-          var lineFocus = createLine(xFocus, yFocus);
-          var lineContext = createLine(xContext, yContext);
-
-          // Permet de redessiner le graphique principal lorsque le zoom/brush est modifié.
-          var brush = d3.brushX()
-            .extent([[0, 0], [widthContext, heightContext]])
-            .on("brush", function () {
-              brushUpdate(brush, focus, lineFocus, xFocus, xContext, xAxisFocus, yAxisFocus, sources, color, lineContext);
-            });
-
-          /***** Chargement des données *****/
+            // domainColor(color, data);
             parseDate(protocolesData);
+            var sources = createSourcesGraphChart(color, protocolesData, prodTypes);
 
-            // var sources = createSources(color, data);
-            var sources = createSourcesBrushGraph(color, protocolesData, prodTypes)
             domainX(xFocus, xContext, protocolesData);
             domainY(yFocus, yContext, sources);
 
             /***** Création du graphique focus *****/
-            // createFocusLineChart(focus, sources, lineFocus, color);
+            createFocusLineChart(focus, sources, lineFocus, color);
 
-
-            const graphChart = createFocusGraphChart(graphChartsvg, sources, lineFocus, color)
             // Axes focus
             focus.append("g")
               .attr("class", "x axis")
@@ -159,7 +158,7 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
               .call(yAxisFocus);
 
             /***** Création du graphique contexte *****/
-            createContextLineChart(graphChartsvg, sources, lineContext, color);
+            createContextLineChart(context, sources, lineContext, color);
 
             // Axes contexte
             context.append("g")
@@ -174,10 +173,12 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
               .attr("y", -6)
               .attr("height", heightContext + 7);
 
+              var legendSVG = d3.select("#legend")
+                .append("svg")
+                .attr("width", 150)
+                .attr("height",400);
             /***** Création de la légende *****/
-            legend(graphChartsvg, sources, color);
-
-
+            legend(legendSVG, sources, color);
 
 
 
