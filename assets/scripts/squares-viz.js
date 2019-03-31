@@ -49,6 +49,12 @@ function create_sqr_viz(parent, sources, color, tip){
   const percentage = compute_percentage(sources);
   console.log(percentage);
   
+  // Cette ligne était manquante. Elle doit être appelée avant d'utiliser le tooltip.
+  parent.call(tip);
+  
+  // Le texte à afficher dans le tooltip.
+  tip.html(d => `${d.name} (${d.percentage}%)`);
+  
   var viz = parent.append("g");
   var legend = parent.append("g")
 				.attr("class", "legend");
@@ -57,15 +63,25 @@ function create_sqr_viz(parent, sources, color, tip){
   var j = 0;
   for(i = 0; i < percentage.length; i++){
 	var nb_sqr = percentage[i].percentage + j;
-	for(j; j < nb_sqr; j++){
-		var nb_col = j % 10;
-		var nb_row = Math.floor(j/10);
-		viz.append("rect")
+	for(j; j < nb_sqr; j++) {
+		// Ici, je crée une IIFE pour ne pas perdre la référence à la variable percentage[i].
+		(() => {
+			var currentPercentage = percentage[i];
+			console.log(currentPercentage);
+			var nb_col = j % 10;
+			var nb_row = Math.floor(j/10);
+			viz.append("rect")
 			.attr("x", 36*nb_col)
 			.attr("y", 36*nb_row)
 			.attr("width", 30)
 			.attr("height", 30)
-			.attr("fill", color(percentage[i].name));
+			.attr("fill", color(percentage[i].name))
+			.on("mouseover", function() {
+				// J'ai ajouté l'instruction call en raison de l'absence de data binding.
+				tip.show.call(this, currentPercentage);
+			})
+			.on("mouseout", tip.hide);
+		})();
 	}
   }
   
@@ -73,9 +89,7 @@ function create_sqr_viz(parent, sources, color, tip){
 	const shift = 380 + 25*i;
 	var item = legend.append("g")
 				.attr("id", "who" + i)
-				.attr("transform", "translate(0," + shift +")")
-				.on("mouseover", tip.show)
-				.on("mouseout", tip.hide);;
+				.attr("transform", "translate(0," + shift +")");
 	
 	item.append("rect")
 		.attr("x", 0)
@@ -91,11 +105,3 @@ function create_sqr_viz(parent, sources, color, tip){
   }
 
 }
-
-function getToolTipText(d) {
-	console.log(d);
-	//var info = d.count + " (" + pourcentage + ")";
-	var info = "hey";
-	return info;
-}
-
