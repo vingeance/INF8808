@@ -41,6 +41,7 @@ function createFocusLineChart(g, sources, line, color) {
      .data(sources)
      .enter().append("g")
      .attr("id", function(source) {
+       source.name = (source.name).replace(' ', '-');
           return "focus-" + source.name;
         })
      .attr("stroke-width", function(source) {
@@ -50,7 +51,15 @@ function createFocusLineChart(g, sources, line, color) {
         })
      .attr("stroke", function(source) {
           var colorName;
-          source.name == "Moyenne" ? colorName = "black": colorName = color(source.name);
+          if(source.name == "Documentaire"){
+            colorName = "#000000"
+          } else if(source.name == "Multimédia"){
+           colorName = "#f95770"
+         } else if(source.name == "Photographie"){
+           colorName = "#5439A4"
+          } else {
+            colorName = color(source.name)
+          }
           return colorName;
         })
      .selectAll("path")
@@ -88,10 +97,17 @@ function createContextLineChart(g, sources, line, color) {
     })
     .attr("clip-path", "url(#clip)")
     .style("stroke", function (d) {
-      if (d.name === "Moyenne") {
-        return "black"
+      var colorName;
+      if(d.name == "Documentaire"){
+        colorName = "#000000"
+      } else if(d.name == "Multimédia"){
+       colorName = "f95770"
+     } else if(d.name == "Photographie"){
+       colorName = "#5439A4"
+      } else {
+        colorName = color(d.name)
       }
-      return color(d.name);
+      return colorName;
     })
     .style("stroke-width", function (d) {
       if (d.name === "Moyenne") {
@@ -100,6 +116,8 @@ function createContextLineChart(g, sources, line, color) {
       return 1;
     })
     .attr("id", function (d) {
+      d.name = (d.name).replace(' ', '-');
+      console.log( "context" + d.name);
       return "context" + d.name;
     });
 }

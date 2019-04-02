@@ -34,7 +34,15 @@ function legend(svg, sources, color) {
     .attr("height", 10)                          // height of a square
     .attr("fill", function(source) {
       var colorName;
-      source.name == "Moyenne" ? colorName = "black": colorName = color(source.name);
+      if(source.name == "Documentaire"){
+        colorName = "#000000"
+      } else if(source.name == "Multimédia"){
+       colorName = "#f95770"
+     } else if(source.name == "Photographie"){
+       colorName = "#5439A4"
+      } else {
+        colorName = color(source.name)
+      }
       return colorName;
     })
     .attr("stroke", "black")
@@ -49,7 +57,8 @@ function legend(svg, sources, color) {
     .attr("x", 15)
     .attr("y", function(source, i){ return i *  20 + 9;})
     .text(function(source) {
-      return source.name;
+      const nom = (source.name).replace('-', ' ');
+      return nom;
     });
 }
 
@@ -66,14 +75,22 @@ function displayLine(element, color) {
   // TODO: Compléter le code pour faire afficher ou disparaître une ligne en fonction de l'élément cliqué.
   let elementValue = element.attr("value");
   let focusSelector = "g#focus" + " #focus-" + elementValue;
-  let contextSelector = "g#context" + " #context-" + elementValue;
-console.log(element);
+  let contextSelector = "g.context" + " #context" + elementValue;
   if(d3.select(focusSelector).style("display") == "none") {
     d3.select(focusSelector).style("display", "inline");
     d3.select(contextSelector).style("display", "inline");
     element.attr("fill", function() {
        var colorName;
-       elementValue == "Moyenne" ? colorName = "black": colorName = color(elementValue);
+       if(elementValue == "Documentaire"){
+         colorName = "#000000"
+       } else if(elementValue == "Multimédia"){
+        colorName = "#f95770"
+      } else if(elementValue == "Photographie"){
+        colorName = "#5439A4"
+       } else {
+         colorName = color(elementValue)
+       }
+       // elementValue == "Documentaire" ? colorName = "000000": colorName = color(elementValue);
        return colorName;
     })
   }
