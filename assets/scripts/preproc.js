@@ -44,7 +44,7 @@ function colorScale(color, prodTypesGroups) {
   }));
 }
 
-function createSources(permisData, protocolesData) {
+function createSourcesMap(permisData, protocolesData) {
   var filtered = permisData.filter(function(d) {
     return (d.NOM_ARROND !== 'Indéfini') && (d.LONGITUDE !== "") && (d.LATITUDE !== "");
   });
@@ -233,4 +233,124 @@ function getZoneId(zoneName) {
       break;
   }
   return key;
+}
+
+function createSourcesLineChart(protocolesData) {
+  var filtered = protocolesData.filter(function(d) {
+    return (d.PERIODE_DE !== "") && (d.PERIODE_AU !== "");
+  });
+  var arraySource = [0,0,0,0,0,0,0,0,0,0,0,0,0];
+    // console.log(filtered);
+    filtered.forEach(function(data) {
+      var startMonth = parseInt(data.PERIODE_DE.split("-")[1],10);
+      var endMonth = parseInt(data.PERIODE_AU.split("-")[1], 10);
+      for (var i = 1; i < 13; i++) {
+        if(i <= endMonth && i >= startMonth){
+            arraySource[i]++;
+        }
+      }
+    });
+
+     return arraySource;
+}
+
+
+/**
+ * Convertit les dates se trouvant dans le fichier CSV en objet de type Date.
+ *
+ * @param data    Données provenant du fichier CSV.
+ * @see https://www.w3schools.com/jsref/jsref_obj_date.asp
+ */
+function parseDate(data) {
+  // TODO: Convertir les dates du fichier CSV en objet de type Date.
+  data.forEach(function(item){
+    item.PERIODE_AU = parseInt(item.PERIODE_AU.split("-")[0], 10);
+  });
+}
+/**
+ * Trie les données par nom de rue puis par date.
+ *
+ * @param color     Échelle de 10 couleurs (son domaine contient les noms de rues).
+ * @param data      Données provenant du fichier CSV.
+ *
+ * @return Array    Les données triées qui seront utilisées pour générer les graphiques.
+ *                  L'élément retourné doit être un tableau d'objets comptant 10 entrées, une pour chaque rue
+ *                  et une pour la moyenne. L'objet retourné doit être de la forme suivante:
+ *
+ *                  [
+ *                    {
+ *                      name: string      // Le nom de la rue,
+ *                      values: [         // Le tableau compte 365 entrées, pour les 365 jours de l'année.
+ *                        date: Date,     // La date du jour.
+ *                        count: number   // Le nombre de vélos compté ce jour là (effectuer une conversion avec parseInt)
+ *                      ]
+ *                    },
+ *                     ...
+ *                  ]
+ */
+function createSourcesGraphChart(color, data, prodTypes) {
+  // TODO: Retourner l'objet ayant le format demandé.
+     var filterData = [];
+     var sources = [];
+     // parseDate(data);
+     for (var j = 1997; j < 2020; j++) {
+     var arraySource = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+     data.forEach(function(d){
+         for (var i = 0; i < prodTypes.length; i++) {
+
+           if(prodTypes[i].name == d.NOM_TYPEPRODUCTION && d.PERIODE_AU == j){
+             arraySource[i]++;
+           }
+         }
+       })
+            sources.push(arraySource);
+     }
+     for (var i = 0; i < prodTypes.length; i++) {
+       filterData[i]= {name: prodTypes[i].name, values: []};
+       for(var j = 0; j < sources.length; j++) {
+           filterData[i].values.push({
+               date: j + 1997,
+               count: sources[j][i]
+           });
+       }
+     }
+     return filterData;
+}
+
+/**
+ * Précise le domaine des échelles utilisées par les graphiques "focus" et "contexte" pour l'axe X.
+ *
+ * @param xFocus      Échelle en X utilisée avec le graphique "focus".
+ * @param xContext    Échelle en X utilisée avec le graphique "contexte".
+ * @param data        Données provenant du fichier CSV.
+ */
+function domainX(xFocus, xContext, data) {
+  // TODO: Préciser les domaines pour les variables "xFocus" et "xContext" pour l'axe X.
+
+  // xFocus.domain([data[0].ANNEE_PROD, data[data.length - 1].ANNEE_PROD]);
+  xFocus.domain([1998,2018]);
+  xContext.domain([1998,2018]);
+}
+
+/**
+ * Précise le domaine des échelles utilisées par les graphiques "focus" et "contexte" pour l'axe Y.
+ *
+ * @param yFocus      Échelle en Y utilisée avec le graphique "focus".
+ * @param yContext    Échelle en Y utilisée avec le graphique "contexte".
+ * @param sources     Données triées par nom de rue et par date (voir fonction "createSources").
+ */
+function domainY(yFocus, yContext, sources) {
+  // TODO: Préciser les domaines pour les variables "yFocus" et "yContext" pour l'axe Y.
+
+    var max = 0;
+    for(var i = 0; i < sources.length; i++) {
+      for (var j = 0; j < sources[i].values.length; j++) {
+        if(sources[i].values[j].count > max) {
+          max = sources[i].values[j].count;
+        }
+      }
+    }
+
+  yFocus.domain([0, max]);
+  yContext.domain([0, max]);
 }

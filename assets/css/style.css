@@ -24,7 +24,7 @@ h1{
 
 #sections > section{
     opacity: .2;
-    margin-bottom: 200px;
+    margin-bottom: 600px;
 }
 
 #sections > section.graph-scroll-active{
@@ -75,4 +75,77 @@ svg .zone {
   width: 300px;
   text-align: left;
   background-color: rgba(255, 255, 255, 0.9);
+}
+
+.line {
+    fill: none;
+    stroke-width: 2;
+}
+
+#line {
+  stroke: #ffab00;
+  stroke-width: 3;
+  fill: none;
+}
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+
+  .focus circle {
+  fill: none;
+  stroke: lightsteelblue;
+}
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    height: 15px;
+    padding: 10px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+body {
+  display: table;
+  margin: 20px auto auto;
+  font-family: Arial, sans-serif;
+}
+
+svg {
+  background-color: white;
+}
+.axis {
+  shape-rendering: crispEdges
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.y.axis path {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: white;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-size: 10pt;
 }
