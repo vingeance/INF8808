@@ -30,8 +30,6 @@ var origins = [
 	{id: 3, color: "#f6be00", name: "Etrangère"},
 	{id: 4, color: "#a7aead", name: "À déterminer"}
 ];
-
-
 d3.csv("./data/permis_tournages.csv").then(function(permisData) {
     d3.csv("./data/protocoles_tournages.csv").then(function(protocolesData) {
         const mapsvg = d3.select("#map").append("svg")
@@ -56,21 +54,18 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
         const shooting_map = create_shooting_map(mapsvg, 900, 650, sources, color1);
         colorScaleLineChart(color2, prodTypes);
         var sources = createSourcesLineChart(protocolesData);
-        console.log(sources);
         const linechart = create_lineChart(linesvg, 750, 450, sources);
-
+        const sqrsvg = d3.select("#sqrviz")
+        						.append("svg")
+        						.attr("width",600)
+        						.attr("height",600)
+        						.attr("transform", "translate(0,20)");
+        		colorScale(colorOrigins, origins);
+        		var tip_sqr_viz = d3.tip()
+        			.attr('class', 'd3-tip')
+        			.offset([-10, 0]);
+        		const sqr_viz = create_sqr_viz(sqrsvg, protocolesData, colorOrigins, tip_sqr_viz);
         var stepOne = function() {
-		// Création de la première data viz
-		const sqrsvg = d3.select("#sqrviz")
-						.append("svg")
-						.attr("width",600)
-						.attr("height",600)
-						.attr("transform", "translate(0,20)");
-		colorScale(colorOrigins, origins);
-		var tip_sqr_viz = d3.tip()
-			.attr('class', 'd3-tip')
-			.offset([-10, 0]);
-		const sqr_viz = create_sqr_viz(sqrsvg, protocolesData, colorOrigins, tip_sqr_viz);
         }
 
         var stepTwo = function() {

@@ -111,6 +111,9 @@ svg .zone {
   stroke-width: 3;
   fill: none;
 }
+#sqrviz {
+  margin-left: 375px;
+}
 .overlay {
   fill: none;
   pointer-events: all;
@@ -142,10 +145,13 @@ body {
   display: table;
   margin: 20px auto auto;
   font-family: Arial, sans-serif;
+  align-content: center;
+  background-color: #DCDCDC;
 }
 
 svg {
-  background-color: white;
+  background-color: #DCDCDC;
+
 }
 .axis {
   shape-rendering: crispEdges
