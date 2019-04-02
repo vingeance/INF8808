@@ -1,41 +1,35 @@
-
+/**
+ * @see https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
+ */
 function create_lineChart(svg, width, height, sources){
-  // 2. Use the margin convention practice
   var margin = {top: 50, right: 50, bottom: 50, left: 80}
 
-  // The number of datapoints
   var n = 13;
-
-  // 5. X scale will use the index of our data
   var xScale = d3.scaleLinear()
       .domain([0, n-1])
-      .range([0, width]); // output
+      .range([0, width]);
 
-  // 6. Y scale will use the randomly generate number
   var yScale = d3.scaleLinear()
-      .domain([0, 4000]) // input
-      .range([height, 0]); // output
+      .domain([0, 4000])
+      .range([height, 0]);
 
 var months = [0,"Janvier","Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
-  // 7. d3's line generator
+
   var line = d3.line()
-      .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-      .y(function(d) { return yScale(d); }) // set the y values for the line generator
-      .curve(d3.curveMonotoneX) // apply smoothing to the line
+      .x(function(d, i) { return xScale(i); })
+      .y(function(d) { return yScale(d); })
+      .curve(d3.curveMonotoneX)
 
   var div = d3.select("body").append("div")
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-  // 1. Add the SVG to the page and employ #2
   svg = svg
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// d3.axisBottom(xScale).tickFormat(function(d,i){return months[i]});
-  // 3. Call the x axis in a group tag
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -47,11 +41,10 @@ var months = [0,"Janvier","Février", "Mars", "Avril", "Mai", "Juin", "Juillet",
              .attr("dy", "1em")
             .style("text-anchor", "middle")
             .text("Mois");
-  // 4. Call the y axis in a group tag
   svg.append("g")
       .attr("class", "y axis")
       .text("Total")
-      .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+      .call(d3.axisLeft(yScale));
       svg.append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 0 - margin.left)
@@ -59,19 +52,17 @@ var months = [0,"Janvier","Février", "Mars", "Avril", "Mai", "Juin", "Juillet",
             .attr("dy", "1em")
             .style("text-anchor", "middle")
             .text("Total");
-  // 9. Append the path, bind the data, and call the line generator
   svg.append("path")
-      .datum(sources) // 10. Binds data to the line
-      .attr("class", "line") // Assign a class for styling
+      .datum(sources)
+      .attr("class", "line")
       .attr("d", line)
-      .attr("id", "line"); // 11. Calls the line generator
+      .attr("id", "line");
 
 
-  // 12. Appends a circle for each datapoint
   svg.selectAll(".dot")
       .data(sources)
-    .enter().append("circle") // Uses the enter().append() method
-      .attr("class", "dot") // Assign a class for styling
+    .enter().append("circle")
+      .attr("class", "dot")
       .attr("cx", function(d, i) { return xScale(i) })
       .attr("cy", function(d) { return yScale(d) })
       .attr("r", 5)

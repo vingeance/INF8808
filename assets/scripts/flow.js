@@ -1,5 +1,6 @@
 /***** Configuration *****/
-var color = d3.scaleOrdinal();
+var color1 = d3.scaleOrdinal();
+var color2 = d3.scaleOrdinal();
 var prodTypes = [
   {id: 13, color: "#a6cee3", name: "Série télévisée"},
   {id: 16, color: "#1f78b4", name: "Court métrage"},
@@ -40,11 +41,12 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
 
 
 
-        colorScale(color, prodTypes);
+        colorScale(color1, prodTypes);
         var sources = createSourcesMap(permisData, protocolesData);
-        const shooting_map = create_shooting_map(mapsvg, 900, 650, sources, color);
-
+        const shooting_map = create_shooting_map(mapsvg, 900, 650, sources, color1);
+        colorScaleLineChart(color2, prodTypes);
         var sources = createSourcesLineChart(protocolesData);
+        console.log(sources);
         const linechart = create_lineChart(linesvg, 750, 450, sources);
 
         var stepOne = function() {
@@ -70,7 +72,6 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
             vis_steps[i]();
         });
 
-        // Graphique principal (focus)
         var marginFocus = {
           top: 10,
           right: 10,
@@ -80,7 +81,6 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
         var widthFocus = 905;
         var heightFocus = 500 - marginFocus.top - marginFocus.bottom;
 
-        // Graphique secondaire qui permet de choisir l'échelle de la visualisation (contexte)
         var marginContext = {
           top: 430,
           right: 10,
@@ -90,7 +90,6 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
         var widthContext = widthFocus;
         var heightContext = 500 - marginContext.top - marginContext.bottom;
 
-        /***** Échelles *****/
         var xFocus = d3.scaleTime().range([0, 900]);
         var yFocus = d3.scaleLinear().range([heightFocus, 0]);
 
@@ -102,7 +101,6 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
 
         var xAxisContext = d3.axisBottom(xContext).tickFormat(d3.format("d"));
 
-        /***** Création des éléments *****/
         var svg = d3.select("#graphChart")
           .append("svg")
           .attr("width", widthFocus + marginFocus.left + marginFocus.right)
@@ -113,11 +111,9 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
         var focus = svg.append("g")
           .attr("transform", "translate(" + marginFocus.left + "," + marginFocus.top + ")");
 
-        // Groupe affichant le graphique secondaire (contexte).
         var context = svg.append("g")
           .attr("transform", "translate(" + marginContext.left + "," + marginContext.top + ")");
 
-        // Ajout d'un plan de découpage.
         svg.append("defs")
           .append("clipPath")
           .attr("id", "clip")
@@ -125,27 +121,22 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
           .attr("width", widthFocus)
           .attr("height", heightFocus);
 
-        // Fonctions pour dessiner les lignes
         var lineFocus = createLine(xFocus, yFocus);
         var lineContext = createLine(xContext, yContext);
 
-        // Permet de redessiner le graphique principal lorsque le zoom/brush est modifié.
         var brush = d3.brushX()
           .extent([[0, 0], [widthContext, heightContext]])
           .on("brush", function () {
             brushUpdate(brush, focus, lineFocus, xFocus, xContext, xAxisFocus, yAxisFocus);
           });
 
-
-            // domainColor(color, data);
             parseDate(protocolesData);
-            var sources = createSourcesGraphChart(color, protocolesData, prodTypes);
+            var sources = createSourcesGraphChart(color2, protocolesData, prodTypes);
 
             domainX(xFocus, xContext, protocolesData);
             domainY(yFocus, yContext, sources);
 
-            /***** Création du graphique focus *****/
-            createFocusLineChart(focus, sources, lineFocus, color);
+            createFocusLineChart(focus, sources, lineFocus, color2);
 
             // Axes focus
             focus.append("g")
@@ -157,10 +148,8 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
               .attr("class", "y axis")
               .call(yAxisFocus);
 
-            /***** Création du graphique contexte *****/
-            createContextLineChart(context, sources, lineContext, color);
+            createContextLineChart(context, sources, lineContext, color2);
 
-            // Axes contexte
             context.append("g")
               .attr("class", "x axis")
               .attr("transform", "translate(0," + heightContext + ")")
@@ -177,25 +166,9 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
                 .append("svg")
                 .attr("width", 150)
                 .attr("height",400);
-            /***** Création de la légende *****/
-            legend(legendSVG, sources, color);
+             legendLineChart(legendSVG, sources, color2);
 
 
 
     });
 });
-
-
-//
-// /**
-//  * Fichier principal permettant de dessiner les deux graphiques demandés. Ce fichier utilise les autres fichiers
-//  * que vous devez compléter.
-//  *
-//  * /!\ Aucune modification n'est nécessaire dans ce fichier!
-//  */
-// (function(d3, localization) {
-//   "use strict";
-//
-//   /***** Configuration *****/
-//
-// })(d3, localization);
