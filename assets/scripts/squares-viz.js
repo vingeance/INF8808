@@ -7,7 +7,7 @@
 function compute_percentage(sources){
 	// on récupère les différents types de production depuis source
 	var prod_origins = [...new Set(sources.map(d => d.NOM_PROVENANCE))];
-	console.log(prod_origins);
+	// console.log(prod_origins);
 	
 	// On crée le tableau adéquate
 	var obj_percentage = {};
@@ -47,7 +47,7 @@ function compute_percentage(sources){
 function create_sqr_viz(parent, sources, color, tip){
   
   const percentage = compute_percentage(sources);
-  console.log(percentage);
+  // console.log(percentage);
   
   // Cette ligne était manquante. Elle doit être appelée avant d'utiliser le tooltip.
   parent.call(tip);
@@ -67,7 +67,7 @@ function create_sqr_viz(parent, sources, color, tip){
 		// Ici, je crée une IIFE pour ne pas perdre la référence à la variable percentage[i].
 		(() => {
 			var currentPercentage = percentage[i];
-			console.log(currentPercentage);
+			// console.log(currentPercentage);
 			var nb_col = j % 10;
 			var nb_row = Math.floor(j/10);
 			viz.append("rect")

@@ -1,14 +1,14 @@
 
-d3.select("#mapPanel").append("g")
-  .attr("id", "panel")
-  .append("text")
-  .attr("id", "district-name")
-  .attr("x", "25%")
-  .attr("y", "25%");
+// d3.select("#mapPanel").append("g")
+//   .attr("id", "panel")
+//   .append("text")
+//   .attr("id", "district-name")
+//   .attr("x", "25%")
+//   .attr("y", "25%");
 
 function create_shooting_map(parent, width, height, sources, color) {
 
-  var projection = d3.geoMercator().center([ -73.75,45.58 ]).scale([ 80000 ]).translate([width/2, height/2]);
+  var projection = d3.geoMercator().center([ -73.75,45.58 ]).scale([ 100000 ]).translate([width/2, height/2]);
   var path = d3.geoPath().projection(projection);
 
   d3.json("./data/montrealTerreGeo.json")
@@ -18,19 +18,29 @@ function create_shooting_map(parent, width, height, sources, color) {
       graph.selectAll("path")
         .data(geojson.features)
         .enter()
-          .append("path")
-          .attr("id", function(d) {
-            return d.properties["NUM"];
-          })
-          .attr("name", function(d) {
-            return d.properties["NOM"];
-          })
-          .attr("class", "zone")
-          .attr("d", path)
-          .attr("fill", "white")
-          .on("click", function(d) {
-              showPanel(d.properties["NOM"]);
-          });
+        .append("path")
+        .attr("id", function(d) {
+          return d.properties["NUM"];
+        })
+        .attr("name", function(d) {
+          return d.properties["NOM"];
+        })
+        .attr("class", "zone")
+        .attr("d", path)
+        .attr("fill", "white")
+        .on("click", function(d) {
+          showPanel(d, sources);
+        });
+
+      // var tooltip = parent.append("div")
+      //   .attr("class", "tooltip")
+      //   .style("opacity", 0)
+      var tooltip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(d => `${d.values[0].TITRE_PRODUCTION} (${d.values[0].DUREE_DE.split("-")[0]})`)
+
+      parent.call(tooltip)
 
       // Create a sub 'g' for each prod types groups
       const prodTypesGroupsEnter = graph.selectAll("g")
@@ -65,13 +75,17 @@ function create_shooting_map(parent, width, height, sources, color) {
           .attr("name", function(d) {
             return d.values[0].NOM_ARROND;
           })
-          .attr("r",2)
+          .attr("r", 1.5)
           .attr("transform", function(d) {
             return "translate(" + projection([d.values[0].LONGITUDE, d.values[0].LATITUDE]) + ")";
           })
           .attr("fill", function(d) {
               return color(d3.select(this.parentNode.parentNode).attr("groupId"));
           })
+          .on("mouseover", function(d) {
+            tooltip.show.call(this, d)
+          })
+          .on("mouseout", tooltip.hide)
     });
 
     // Create the map legend
@@ -79,12 +93,22 @@ function create_shooting_map(parent, width, height, sources, color) {
 }
 
 // Display an info panel when a region is clicked on the map
-function showPanel(pathName) {
+function showPanel(feature, sources) {
   var panel = d3.select("#panel");
   panel.style("display", "block");
 
   var districtNameElem = panel.select("#district-name");
-  districtNameElem.text(pathName);
+  districtNameElem.text(feature.properties.NOM);
+
+  var count = sources.reduce((a, source) => {
+    return source.values.reduce((b, demande) => {
+      return demande.values.reduce((c, permis) => {
+        return c + (permis.key === feature.properties.NOM ? permis.values.length : 0)
+      }, b)
+    }, a)
+  }, 0)
+
+  panel.select("#district-count").text(count)
 }
 
 // Legend for the map

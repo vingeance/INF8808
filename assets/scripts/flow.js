@@ -36,12 +36,18 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
             .attr("width", 900)
             .attr("height", 750);
 
-        mapsvg.append("g")
+        const mapPanel = mapsvg.append("g")
           .attr("id", "panel")
-          .append("text")
+
+        mapPanel.append("text")
           .attr("id", "district-name")
           .attr("x", "25%")
           .attr("y", "25%");
+
+        mapPanel.append("text")
+          .attr("id", "district-count")
+          .attr("x", "25%")
+          .attr("y", "25%")
 
       const linesvg = d3.select("#lineChart").append("svg")
               .attr("width", 900)
@@ -121,8 +127,8 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
           .append("svg")
           .attr("width", widthFocus + marginFocus.left + marginFocus.right)
           .attr("height", heightFocus + marginFocus.top + marginFocus.bottom);
-        console.log(widthFocus + marginFocus.left + marginFocus.right);
-        console.log(heightFocus + marginFocus.top + marginFocus.bottom);
+        // console.log(widthFocus + marginFocus.left + marginFocus.right);
+        // console.log(heightFocus + marginFocus.top + marginFocus.bottom);
         // Groupe affichant le graphique principal (focus).
         var focus = svg.append("g")
           .attr("transform", "translate(" + marginFocus.left + "," + marginFocus.top + ")");
