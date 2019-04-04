@@ -44,10 +44,10 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
           .attr("x", "25%")
           .attr("y", "25%");
 
-        mapPanel.append("text")
-          .attr("id", "district-count")
-          .attr("x", "25%")
-          .attr("y", "25%")
+        // mapPanel.append("text")
+        //   .attr("id", "district-count")
+        //   .attr("x", "25%")
+        //   .attr("y", "25%")
 
       const linesvg = d3.select("#lineChart").append("svg")
               .attr("width", 900)
