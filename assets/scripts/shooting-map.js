@@ -1,40 +1,12 @@
 
-// d3.select("#mapPanel").append("g")
-//   .attr("id", "panel")
-//   .append("text")
-//   .attr("id", "district-name")
-//   .attr("x", "25%")
-//   .attr("y", "25%");
-
 function create_shooting_map(parent, width, height, sources, color) {
 
-  var projection = d3.geoMercator().center([ -73.75,45.58 ]).scale([ 100000 ]).translate([width/2, height/2]);
+  var projection = d3.geoMercator().center([ -73.75,45.58 ]).scale([ 80000 ]).translate([width/2, height/2]);
   var path = d3.geoPath().projection(projection);
 
   d3.json("./data/montrealTerreGeo.json")
     .then(function(geojson) {
 
-      var graph = parent.append("g");
-      graph.selectAll("path")
-        .data(geojson.features)
-        .enter()
-        .append("path")
-        .attr("id", function(d) {
-          return d.properties["NUM"];
-        })
-        .attr("name", function(d) {
-          return d.properties["NOM"];
-        })
-        .attr("class", "zone")
-        .attr("d", path)
-        .attr("fill", "white")
-        .on("click", function(d) {
-          showPanel(d, sources);
-        });
-
-      // var tooltip = parent.append("div")
-      //   .attr("class", "tooltip")
-      //   .style("opacity", 0)
       var tooltip = d3.tip()
         .attr('class', 'd3-tip')
         .offset([-10, 0])
@@ -42,29 +14,62 @@ function create_shooting_map(parent, width, height, sources, color) {
 
       parent.call(tooltip)
 
+      var focusedDistrict
+
+      var graph = parent.append("g");
+
+      graph.selectAll("path")
+        .data(geojson.features)
+        .enter()
+        .append("path")
+        .attr("id", d => `${d.properties.NOM}-district`)
+        .attr("name", d => d.properties.NOM)
+        .attr("class", "zone")
+        .attr("d", path)
+        .attr("fill", "white")
+        .on("click", function(d) {
+          showPanel(d, sources);
+
+          // inspired by https://bl.ocks.org/mbostock/2206590
+
+          var x, y, k
+
+          if (focusedDistrict !== d)
+          {
+            var centroid = path.centroid(d)
+            x = centroid[0]
+            y = centroid[1]
+            k = 4
+            focusedDistrict = d
+          }
+          else
+          {
+            x = width / 2
+            y = height / 2
+            k = 1
+            focusedDistrict = null
+          }
+
+          graph.transition()
+            .duration(750)
+            .attr("transform", `translate(${width / 2}, ${height / 2})scale(${k})translate(${-x}, ${-y})`)
+        })
+
       // Create a sub 'g' for each prod types groups
       const prodTypesGroupsEnter = graph.selectAll("g")
         .data(sources)
         .enter()
         .append("g")
-        .attr("id", function(d) {
-          return "prodGroup" + d.key;
-        })
-        .attr("groupId", function(d) {
-          return d.key;
-        });
+        .attr("id", d => `prodGroup${d.key}`)
+        .attr("groupId", d => d.key)
 
       // Create a sub 'g' for each prod ids groups (a particular prod may have been shot at different locations)
       const prodIdsGroupsEnter = prodTypesGroupsEnter.merge(prodTypesGroupsEnter).selectAll("g")
         .data(d => d.values)
         .enter()
         .append("g")
-        .attr("id", function(d) {
-          return "prodId" + d.key;
-        })
-        .attr("prodName", function(d) {
-          return d.NOM_PRO;
-        });
+        .attr("id", d => `prodId${d.key}`)
+        .attr("prodName", d => d.NOM_PRO)
 
       // Create a circle for each shootings
       const circle = prodIdsGroupsEnter.merge(prodIdsGroupsEnter).selectAll("circle")
@@ -72,13 +77,9 @@ function create_shooting_map(parent, width, height, sources, color) {
         .enter()
           .append("circle")
           .attr("class", "circle")
-          .attr("name", function(d) {
-            return d.values[0].NOM_ARROND;
-          })
-          .attr("r", 1.5)
-          .attr("transform", function(d) {
-            return "translate(" + projection([d.values[0].LONGITUDE, d.values[0].LATITUDE]) + ")";
-          })
+          .attr("name", d => d.values[0].NOM_ARROND)
+          .attr("r", 0.5)
+          .attr("transform", d => `translate(${projection([d.values[0].LONGITUDE, d.values[0].LATITUDE])})`)
           .attr("fill", function(d) {
               return color(d3.select(this.parentNode.parentNode).attr("groupId"));
           })
@@ -100,15 +101,15 @@ function showPanel(feature, sources) {
   var districtNameElem = panel.select("#district-name");
   districtNameElem.text(feature.properties.NOM);
 
-  var count = sources.reduce((a, source) => {
-    return source.values.reduce((b, demande) => {
-      return demande.values.reduce((c, permis) => {
-        return c + (permis.key === feature.properties.NOM ? permis.values.length : 0)
-      }, b)
-    }, a)
-  }, 0)
+  // var count = sources.reduce((a, source) => {
+  //   return source.values.reduce((b, demande) => {
+  //     return demande.values.reduce((c, permis) => {
+  //       return c + (permis.key === feature.properties.NOM ? permis.values.length : 0)
+  //     }, b)
+  //   }, a)
+  // }, 0)
 
-  panel.select("#district-count").text(count)
+  // panel.select("#district-count").text(count)
 }
 
 // Legend for the map
