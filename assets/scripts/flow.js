@@ -22,6 +22,21 @@ var prodTypes = [
   {id: 1, color: "#b15928", name: "À déterminer"}
 ];
 
+const prodTypesGroups = [
+  { groupId: 0, groupName: "Série télé", color: "#a6cee3", prodTypesIds: [ 13, 27 ] },
+  { groupId: 1, groupName: "Long/Court métrage", color: "#1f78b4", prodTypesIds: [ 16, 11 ] },
+  { groupId: 2, groupName: "Documentaire", color: "#b2df8a", prodTypesIds: [ 22 ] },
+  { groupId: 3, groupName: "Evénement média", color: "#33a02c", prodTypesIds: [ 26 ] },
+  { groupId: 4, groupName: "Film étudiant", color: "#fb9a99", prodTypesIds: [ 19 ] },
+  { groupId: 5, groupName: "Multimédia", color: "#e31a1c", prodTypesIds: [ 20 ] },
+  { groupId: 6, groupName: "Photographie", color: "#fdbf6f", prodTypesIds: [ 18, 25 ] },
+  { groupId: 7, groupName: "Publicité", color: "#ff7f00", prodTypesIds: [ 21, 15, 28 ] },
+  { groupId: 8, groupName: "Téléfilm/Télé-roman", color: "#cab2d6", prodTypesIds: [ 12, 23 ] },
+  { groupId: 9, groupName: "Télévision générale", color: "#6a3d9a", prodTypesIds: [ 14 ] },
+  { groupId: 10, groupName: "Vidéo", color: "#ffff99", prodTypesIds: [ 17, 24 ] },
+  { groupId: 11, groupName: "Autre", color: "#b15928", prodTypesIds: [ 1 ] }
+];
+
 
 var colorOrigins = d3.scaleOrdinal();
 var origins = [
@@ -33,16 +48,16 @@ var origins = [
 d3.csv("./data/permis_tournages.csv").then(function(permisData) {
     d3.csv("./data/protocoles_tournages.csv").then(function(protocolesData) {
         const mapsvg = d3.select("#map").append("svg")
-            .attr("width", 900)
+            .attr("width", 1200)
             .attr("height", 750);
 
-        const mapPanel = mapsvg.append("g")
+        /*const mapPanel = mapsvg.append("g")
           .attr("id", "panel")
 
         mapPanel.append("text")
           .attr("id", "district-name")
           .attr("x", "25%")
-          .attr("y", "25%");
+          .attr("y", "25%");*/
 
         // mapPanel.append("text")
         //   .attr("id", "district-count")
@@ -55,9 +70,9 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
 
 
 
-        colorScale(color1, prodTypes);
+        colorScale(color1, prodTypesGroups);
         var sources = createSourcesMap(permisData, protocolesData);
-        const shooting_map = create_shooting_map(mapsvg, 900, 650, sources, color1);
+        const shooting_map = create_shooting_map(mapsvg, 1200, 750, sources, color1);
         colorScaleLineChart(color2, prodTypes);
         var sources = createSourcesLineChart(protocolesData);
         const linechart = create_lineChart(linesvg, 750, 450, sources);
@@ -100,7 +115,7 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
           bottom: 100,
           left: 60
         };
-        var widthFocus = 675;
+        var widthFocus = 950;
         var heightFocus = 500 - marginFocus.top - marginFocus.bottom;
 
         var marginContext = {

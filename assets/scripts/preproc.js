@@ -20,21 +20,6 @@ var prodTypes = [
   {id: 1, typeName: "À déterminer"}
 ];
 
-const prodTypesGroups = [
-  { groupId: 0, groupName: "Série télé", color: "#a6cee3", prodTypesIds: [ 13, 27 ] },
-  { groupId: 1, groupName: "Long/Court métrage", color: "#1f78b4", prodTypesIds: [ 16, 11 ] },
-  { groupId: 2, groupName: "Documentaire", color: "#b2df8a", prodTypesIds: [ 22 ] },
-  { groupId: 3, groupName: "Evénement média", color: "#33a02c", prodTypesIds: [ 26 ] },
-  { groupId: 4, groupName: "Film étudiant", color: "#fb9a99", prodTypesIds: [ 19 ] },
-  { groupId: 5, groupName: "Multimédia", color: "#e31a1c", prodTypesIds: [ 20 ] },
-  { groupId: 6, groupName: "Photographie", color: "#fdbf6f", prodTypesIds: [ 18, 25 ] },
-  { groupId: 7, groupName: "Publicité", color: "#ff7f00", prodTypesIds: [ 21, 15, 28 ] },
-  { groupId: 8, groupName: "Téléfilm/Télé-roman", color: "#cab2d6", prodTypesIds: [ 12, 23 ] },
-  { groupId: 9, groupName: "Télévision générale", color: "#6a3d9a", prodTypesIds: [ 14 ] },
-  { groupId: 10, groupName: "Vidéo", color: "#ffff99", prodTypesIds: [ 17, 24 ] },
-  { groupId: 11, groupName: "Autre", color: "#b15928", prodTypesIds: [ 1 ] }
-];
-
 function colorScale(color, prodTypesGroups) {
   color.domain(prodTypesGroups.map(function (d) {
     return d.groupId;

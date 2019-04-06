@@ -28,14 +28,16 @@ function create_shooting_map(parent, width, height, sources, color) {
         .attr("d", path)
         .attr("fill", "white")
         .on("click", function(d) {
-          showPanel(d, sources);
 
           // inspired by https://bl.ocks.org/mbostock/2206590
 
           var x, y, k
 
+          d3.select(".selected").classed("selected", false);
           if (focusedDistrict !== d)
           {
+            d3.select(this).classed("selected", true);
+            showPanel(d, sources);
             var centroid = path.centroid(d)
             x = centroid[0]
             y = centroid[1]
@@ -44,6 +46,7 @@ function create_shooting_map(parent, width, height, sources, color) {
           }
           else
           {
+            d3.select("#mapPanel").style("display", "none");
             x = width / 2
             y = height / 2
             k = 1
@@ -77,8 +80,11 @@ function create_shooting_map(parent, width, height, sources, color) {
         .enter()
           .append("circle")
           .attr("class", "circle")
+          .attr("stroke", "black")
+          .attr("stroke-width", 0.1)
+          .attr("stroke-opacity", 0.5)
           .attr("name", d => d.values[0].NOM_ARROND)
-          .attr("r", 0.5)
+          .attr("r", 1)
           .attr("transform", d => `translate(${projection([d.values[0].LONGITUDE, d.values[0].LATITUDE])})`)
           .attr("fill", function(d) {
               return color(d3.select(this.parentNode.parentNode).attr("groupId"));
@@ -87,29 +93,31 @@ function create_shooting_map(parent, width, height, sources, color) {
             tooltip.show.call(this, d)
           })
           .on("mouseout", tooltip.hide)
+
+
+        // Create the map legend
+        legend(parent, prodTypesGroups, color);
     });
 
-    // Create the map legend
-    legend(parent, prodTypesGroups, color);
 }
 
 // Display an info panel when a region is clicked on the map
 function showPanel(feature, sources) {
-  var panel = d3.select("#panel");
+  var panel = d3.select("#mapPanel");
   panel.style("display", "block");
 
-  var districtNameElem = panel.select("#district-name");
+  var districtNameElem = panel.select("#zone-name");
   districtNameElem.text(feature.properties.NOM);
 
-  // var count = sources.reduce((a, source) => {
-  //   return source.values.reduce((b, demande) => {
-  //     return demande.values.reduce((c, permis) => {
-  //       return c + (permis.key === feature.properties.NOM ? permis.values.length : 0)
-  //     }, b)
-  //   }, a)
-  // }, 0)
+  var count = sources.reduce((a, source) => {
+   return source.values.reduce((b, demande) => {
+     return demande.values.reduce((c, permis) => {
+         return c + (permis.key === feature.properties.NOM ? permis.values.length : 0)
+       }, b)
+     }, a)
+   }, 0)
 
-  // panel.select("#district-count").text(count)
+  panel.select("#zone-count").text("Nombre de permis de tournages : " + count)
 }
 
 // Legend for the map
@@ -158,9 +166,11 @@ function displayCircles(element, color) {
     element.attr("fill", function () {
       return color(element.attr("value"))
     });
-    d3.select(prodGroup).style("opacity", 1);
+    //d3.select(prodGroup).style("opacity", 1);
+    d3.select(prodGroup).style("display", "table");
   } else {
     element.attr("fill", "white");
-    d3.select(prodGroup).style("opacity", 0);
+    //d3.select(prodGroup).style("opacity", 0);
+    d3.select(prodGroup).style("display", "none");
   }
 }

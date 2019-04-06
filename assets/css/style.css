@@ -1,5 +1,5 @@
 body{
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0px auto;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -23,6 +23,7 @@ h1{
 #sections > section{
     opacity: .2;
     margin-bottom: 200px;
+    position:relative;
 }
 
 #sections > section.graph-scroll-active{
@@ -59,7 +60,12 @@ svg .zone {
   stroke-width: 0.5;
 }
 .zone:hover {
-  fill:#bebebe;
+  stroke: red;
+  stroke-width: 3;
+}
+.zone.selected {
+  stroke: red;
+  stroke-width: 3;
 }
 .zone{
   font-size: 12px;
@@ -68,11 +74,27 @@ svg .zone {
 }
 
 /***** Panel *****/
-#panel {
+#mapPanel {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
   display: none;
-  width: 300px;
+  width: 400px;
+  padding: 15px 10px;
   text-align: left;
-  background-color: rgba(255, 255, 255, 0.9);
+  font-size: 0.7em;
+  background-color: lightsteelblue;
+}
+
+#mapPanel p {
+  font-size: 16px;
+  margin-top: 0;
+  font-weight: bold;
+}
+
+#mapPanel h2 {
+  color: #666;
+  font-size: 14px;
 }
 
 
