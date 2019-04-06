@@ -7,56 +7,60 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <h1>Tournages dans la région de Montréal</h1>
-    <p style="text-align:center;">
-      <img src="/assets/img/camera.jpg" max-width="200px" height="200px" align="middle"/>
-
-    </p>
-
-    <p>Montréal est une destination populaire dans le domaine de la cinématographie. En effet, depuis 1997, plus de <b> 13 000</b> se sont déroulés dans la ville.
-      Quelle est la provenance de ces tournages ? Quels sont les endroits des tournages les plus populaires ? Quelle est la période de l'année où les tournages sont nombreux ?
+    <div id="header" style="margin-bottom:200px;">
+      <h1>Tournages dans la région de Montréal</h1>
+      <p style="text-align:center;">
+        <img src="/assets/img/camera.png" height="200px" align="middle"/>
       </p>
-      <p></p>
-      <br></br><br></br><br></br>
+      <p style="text-align:center;margin-top:50px;">Montréal est une destination populaire dans le domaine de la cinématographie. En effet, depuis 1997, plus de <b> 13 000</b> tournages se sont déroulés dans la ville.
+        Quelle est la provenance de ces tournages ? Quels sont les endroits les plus populaires pour tourner ? Quelle est la période de l'année où les tournages sont nombreux ?
+        </p>
+
+    </div>
 
     <div id="container">
       <div id="sections">
-          <section>
+          <section id="sqrviz">
               <h3>Provenance des productions</h3>
-              D'où proviennent les producteurs des tournages à Montréal ?
-			  <div id="sqrviz"></div>
-			  
-			  <p> Cette visualisation met en évidence l'origine des producteurs des tournages fait à Montréal. On est en mesure d'affirmer que les productions sont en très grande majorité d'origine canadienne, malgré la présence d'une petite proportion de tournage d'origine non déterminée. </p>
-			  
+              <!--D'où proviennent les producteurs des tournages à Montréal ?-->
+
+          <p> Cette visualisation met en évidence l'origine des producteurs de tournages à Montréal.
+            La majorité des productions sont d'origine canadienne (89% de 13215 productions).
+          </p>
+
           </section>
-          <section>
+          <section id="lineChart">
               <h3>Tournages selon les mois</h3>
-              Quelles sont les périodes de l'année où il y a le plus de tournage à montréal ?
-              <div id="lineChart"></div>
-			  
-			  <p> On montre sur cette visualisation le nombre de tournages cumulés par mois de l'année. Ceci permet de montrer les tendances saisonnières pour les tournages à Montréal. La courbe est globalement croissante tout au long de l'année. La seconde moitié de l'année semble constituer une période propice pour les tournages à Montréal, avec un maximum de 3843 tournages pour le mois d'août. Cette période, de mai à novembre, est la période non-hivernal à Montréal. Il n'y a pas de neige, ce qui facilite les tournages d'un point de vue logistique notamment.</p>
-			  
+              <!--Quelles sont les périodes de l'année où il y a le plus de tournage à montréal ?-->
+      			  <p> On montre sur cette visualisation le nombre de tournages cumulés par mois de l'année. Ceci permet de montrer les tendances saisonnières pour les tournages à Montréal. La courbe est globalement croissante tout au long de l'année.
+                La seconde moitié de l'année semble constituer une période propice aux tournages à Montréal, avec un maximum de 3843 tournages pour le mois d'août. Cette période, de mai à novembre, est la période non-hivernale à Montréal.
+                On suppose que l'absence de neige facilite les tournages, notamment d'un point de vue logistique.</p>
+
             </section>
           <section>
               <h3>Tournages selon les types</h3>
-               Visualisation des différents types de productions au fil du temps.
-              <div id="wrapper">
-              <div id="legend" style="width: 150px; float:left; margin:5px"></div>
-              <div id="graphChart"style="width: 120px; float:left"></div>
-			  </div>
-			  
-			  <p> On observe ici la tendance des tournages au cours des années, depuis 1998 jusqu'à 2018. Les messages publicitaires est le type de tournage qui se démarque le plus. Les tournages liés à la télévision en générale et à la photographie sont les tournages les deuxième et troisième tournage les plus représentés. On remarque ici que les types de tournages que l'on retrouve le plus souvent au cours du temps sont des tournages qui ont clairement une vocation à être des tournages plutôt locaux, donc d'origine canadienne. Ce qui complète les observations faites sur la première visualisation.</p>
+               <!--Visualisation des différents types de productions au fil du temps.-->
+       			  <p> On observe ici la tendance des tournages au cours des années, de 1998 à 2018. Les messages publicitaires représentent le type de production qui se démarque le plus.
+                Les tournages liés à la télévision générale et à la photographie prennent aussi une place importante.
+                 On remarque ici que les types de tournages que l'on retrouve le plus souvent au cours du temps sont des tournages qui ont clairement une vocation à être des tournages plutôt locaux, donc d'origine canadienne.</p>
+              <div id="graphChartContainer" style="position:relative;height:550px;">
+                <div id="legend" style="width:175px;"></div>
+                <div id="graphChart" style="position:absolute; top:0px; right:0px;"></div>
+              </div>
 
           </section>
+
           <section>
               <h3>Endroits des tournages</h3>
-              Visualisation des endroits de tournages à montréal.
+               <!--Visualisation des endroits de tournages à montréal.-->
+               <p> On observe ici une certaine indépendance entre les types de tournages et leurs lieux. La concentration des tournages est essentiellement autour des quartiers Rosemont, La Petite Italie,
+                  Le Village, Hochelaga et le Centre Ville. Dans une moindre mesure, on retrouve également une quantité importante de tournages dans les quartiers Côte-des-neiges, Village Monkland, Cartierville et Ahunstic.</p>
+
               <div id="mapContainer">
                 <div id="map"></div>
                 <div id="mapPanel"></div>
               </div>
-			  
-			  <p> On observe ici une certaine indépendance entre les types de tournages et leurs lieux. La concentration des tournages est essentiellement autour des quartiers Rosemont, La Petite Italie, Le Village, Hochelaga et le Centre Ville. Dans une moindre mesure on retrouve également beaucoup de tournage dans les quartiers Côte-des-neiges, Village Monkland, Cartierville eet Ahunstic.</p>
+
           </section>
       </div>
     </div>

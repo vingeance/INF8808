@@ -18,13 +18,11 @@ h1{
 }
 
 #sections{
-    width: 340px;
-    padding-bottom:300px;
 }
 
 #sections > section{
     opacity: .2;
-    margin-bottom: 600px;
+    margin-bottom: 200px;
 }
 
 #sections > section.graph-scroll-active{
@@ -40,7 +38,7 @@ h1{
 }
 
 #footer{
-    height:250px;
+    height:0px;
 }
 
 /*** Map ********************/
@@ -112,7 +110,7 @@ svg .zone {
   fill: none;
 }
 #sqrviz {
-  margin-left: 375px;
+
 }
 .overlay {
   fill: none;

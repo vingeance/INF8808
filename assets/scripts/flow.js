@@ -64,7 +64,7 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
         const sqrsvg = d3.select("#sqrviz")
         						.append("svg")
         						.attr("width",600)
-        						.attr("height",600)
+        						.attr("height",500)
         						.attr("transform", "translate(0,20)");
         		colorScale(colorOrigins, origins);
         		var tip_sqr_viz = d3.tip()
@@ -100,7 +100,7 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
           bottom: 100,
           left: 60
         };
-        var widthFocus = 905;
+        var widthFocus = 675;
         var heightFocus = 500 - marginFocus.top - marginFocus.bottom;
 
         var marginContext = {
@@ -186,8 +186,8 @@ d3.csv("./data/permis_tournages.csv").then(function(permisData) {
 
               var legendSVG = d3.select("#legend")
                 .append("svg")
-                .attr("width", 150)
-                .attr("height",400);
+                .attr("width", 175)
+                .attr("height",500);
              legendLineChart(legendSVG, sources, color2);
 
 

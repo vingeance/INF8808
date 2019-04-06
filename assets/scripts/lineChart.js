@@ -75,7 +75,7 @@ var months = [0,"Janvier","Février", "Mars", "Avril", "Mai", "Juin", "Juillet",
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div	.html("<b> Nombre de  tournage: " + d + "</b>" )
+            div	.html("<b> Nombre de  tournages: " + d + "</b>" )
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY) + "px");
 

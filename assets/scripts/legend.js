@@ -3,7 +3,7 @@
 function legendLineChart(svg, sources, color) {
   var legend = svg.append("g")
     .attr("class","legend")
-    .attr("transform","translate(0,30)")
+    .attr("transform","translate(5,30)")
     .style("font-size","12px");
 
   legend.selectAll('rect')
@@ -14,10 +14,10 @@ function legendLineChart(svg, sources, color) {
       return source.name;
     })
     .attr("y", function(source, i){
-      return i *  20;
+      return i *  25;
     })
-    .attr("width", 10)
-    .attr("height", 10)
+    .attr("width", 15)
+    .attr("height", 15)
     .attr("fill", function(source) {
       var colorName;
       if(source.name == "Documentaire"){
@@ -44,8 +44,8 @@ function legendLineChart(svg, sources, color) {
     .data(sources)
     .enter()
     .append("text")
-    .attr("x", 15)
-    .attr("y", function(source, i){ return i *  20 + 9;})
+    .attr("x", 20)
+    .attr("y", function(source, i){ return i *  25 + 12;})
     .text(function(source) {
       const nom = (source.name).replace('-', ' ');
       return nom;
