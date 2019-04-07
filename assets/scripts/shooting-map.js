@@ -6,6 +6,37 @@ function create_shooting_map(parent, width, height, sources, color) {
 
   d3.json("./data/montrealTerreGeo.json")
     .then(function(geojson) {
+      // Summarized data for each district
+      var districts = {}
+
+      geojson.features.forEach(feature => {
+        districts[feature.properties.NOM] = {
+          prodTypeCount: prodTypesGroups.reduce((obj, type) => {
+            return { ...obj, [type.groupId]: 0 }
+          }, {}),
+          permitsCount: 0,
+          maj: null
+        }
+      })
+
+      sources.forEach(type => {
+        type.values.forEach(demande => {
+          demande.values.forEach(district => {
+            districts[district.key] = districts[district.key] || { prodTypeCount: {}, permitsCount: 0 }
+
+            districts[district.key].prodTypeCount[type.key]++
+
+            districts[district.key].permitsCount += district.values.length
+          })
+        })
+      })
+
+      Object.values(districts).forEach(district => {
+        district.maj = Object.keys(district.prodTypeCount).reduce((maj, key) => {
+          var majCount = maj !== null ? district.prodTypeCount[maj] : 0
+          return district.prodTypeCount[key] > majCount ? key : maj
+        }, null)
+      })
 
       var tooltip = d3.tip()
         .attr('class', 'd3-tip')
@@ -24,28 +55,32 @@ function create_shooting_map(parent, width, height, sources, color) {
         .append("path")
         .attr("id", d => `${d.properties.NOM}-district`)
         .attr("name", d => d.properties.NOM)
-        .attr("class", "zone")
+        .attr("class", "zone no-highlight")
         .attr("d", path)
         .attr("fill", "white")
+        .attr("stroke", d => districts[d.properties.NOM].maj !== null ? color(districts[d.properties.NOM].maj) : "#333333")
         .on("click", function(d) {
 
           // inspired by https://bl.ocks.org/mbostock/2206590
 
           var x, y, k
 
+          
+          d3.select(".selected").classed("no-highlight", true);
           d3.select(".selected").classed("selected", false);
-          if (focusedDistrict !== d)
-          {
+          d3.select(this).classed("no-highlight", false);
+
+          if (focusedDistrict !== d) {
             d3.select(this).classed("selected", true);
-            showPanel(d, sources);
+
+            showPanel(d, districts[d.properties.NOM]);
+
             var centroid = path.centroid(d)
             x = centroid[0]
             y = centroid[1]
             k = 4
             focusedDistrict = d
-          }
-          else
-          {
+          } else {
             d3.select("#mapPanel").style("display", "none");
             x = width / 2
             y = height / 2
@@ -56,6 +91,14 @@ function create_shooting_map(parent, width, height, sources, color) {
           graph.transition()
             .duration(750)
             .attr("transform", `translate(${width / 2}, ${height / 2})scale(${k})translate(${-x}, ${-y})`)
+        })
+        .on("mouseover", function(d) {
+          d3.select(this).classed("no-highlight", false);
+        })
+        .on("mouseout", function(d) {
+          if (d !== focusedDistrict) {
+            d3.select(this).classed("no-highlight", true);
+          }
         })
 
       // Create a sub 'g' for each prod types groups
@@ -78,46 +121,38 @@ function create_shooting_map(parent, width, height, sources, color) {
       const circle = prodIdsGroupsEnter.merge(prodIdsGroupsEnter).selectAll("circle")
         .data(d => d.values)
         .enter()
-          .append("circle")
-          .attr("class", "circle")
-          .attr("stroke", "black")
-          .attr("stroke-width", 0.1)
-          .attr("stroke-opacity", 0.5)
-          .attr("name", d => d.values[0].NOM_ARROND)
-          .attr("r", 1)
-          .attr("transform", d => `translate(${projection([d.values[0].LONGITUDE, d.values[0].LATITUDE])})`)
-          .attr("fill", function(d) {
-              return color(d3.select(this.parentNode.parentNode).attr("groupId"));
-          })
-          .on("mouseover", function(d) {
-            tooltip.show.call(this, d)
-          })
-          .on("mouseout", tooltip.hide)
+        .append("circle")
+        .attr("class", "circle")
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.1)
+        .attr("stroke-opacity", 0.5)
+        .attr("name", d => d.values[0].NOM_ARROND)
+        .attr("r", 1)
+        .attr("transform", d => `translate(${projection([d.values[0].LONGITUDE, d.values[0].LATITUDE])})`)
+        .attr("fill", function(d) {
+            return color(d3.select(this.parentNode.parentNode).attr("groupId"));
+        })
+        .on("mouseover", function(d) {
+          tooltip.show.call(this, d)
+        })
+        .on("mouseout", tooltip.hide)
 
 
-        // Create the map legend
-        legend(parent, prodTypesGroups, color);
+      // Create the map legend
+      legend(parent, prodTypesGroups, color);
     });
 
 }
 
 // Display an info panel when a region is clicked on the map
-function showPanel(feature, sources) {
+function showPanel(feature, districtSummary) {
   var panel = d3.select("#mapPanel");
   panel.style("display", "block");
 
   var districtNameElem = panel.select("#zone-name");
   districtNameElem.text(feature.properties.NOM);
 
-  var count = sources.reduce((a, source) => {
-   return source.values.reduce((b, demande) => {
-     return demande.values.reduce((c, permis) => {
-         return c + (permis.key === feature.properties.NOM ? permis.values.length : 0)
-       }, b)
-     }, a)
-   }, 0)
-
-  panel.select("#zone-count").text("Nombre de permis de tournages : " + count)
+  panel.select("#zone-count").text("Nombre de permis de tournages : " + districtSummary.permitsCount)
 }
 
 // Legend for the map
