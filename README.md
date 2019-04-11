@@ -1,5 +1,5 @@
 # INF8808
 
-Scrollitelling : http://www.cs.middlebury.edu/~candrews/classes/cs465-f18/labs/lab10.html#configure-the-visualization
-Canada maps : https://github.com/fdaudens/_maps
-Zomable Montreal Map : http://nicolas.kruchten.com/content/2014/01/mtlelection-zoomable-map/
+Chrome: Démarrer un serveur local statique avec python: `$ python -m http.server 8080` et entrer l'adresse `localhost:8080` dans le browser
+
+Autres: Ouvrir index.html
